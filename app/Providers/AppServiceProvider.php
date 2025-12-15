@@ -11,7 +11,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \App\Console\Commands\CheckEntertainerImages::class,
+            ]);
+        }
     }
 
     /**
