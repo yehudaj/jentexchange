@@ -1,0 +1,78 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app:/var/www/html:cached
+      - ./app/storage:/var/www/html/storage:cached
+    environment:
+      - APP_ENV=local
+      - APACHE_RUN_USER=www-data
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: jentexchange
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: OHxCIHkrgg3uiKFkUtKO
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app:/var/www/html:cached
+      - ./app/storage:/var/www/html/storage:cached
+    environment:
+      - APP_ENV=local
+      - APACHE_RUN_USER=www-data
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: jentexchange
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: OHxCIHkrgg3uiKFkUtKO
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:
