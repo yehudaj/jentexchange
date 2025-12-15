@@ -6,6 +6,7 @@ use App\Models\Entertainer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class EntertainerController extends Controller
 {
@@ -190,8 +191,8 @@ class EntertainerController extends Controller
         // If AJAX (fetch) request, return JSON with updated image paths
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
-                'profile_image_path' => $entertainer->profile_image_path,
-                'background_image_path' => $entertainer->background_image_path,
+                'profile_image_path' => $entertainer->profile_image_path ? Storage::url($entertainer->profile_image_path) : null,
+                'background_image_path' => $entertainer->background_image_path ? Storage::url($entertainer->background_image_path) : null,
                 'status' => 'ok'
             ]);
         }

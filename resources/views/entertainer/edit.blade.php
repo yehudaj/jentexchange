@@ -396,11 +396,11 @@
               // update DOM with returned paths
               if(json.profile_image_path && currentField === 'profile_image'){
                 const avatarEl = document.getElementById('avatar-img');
-                if(avatarEl && avatarEl.tagName === 'IMG') avatarEl.src = '/' + json.profile_image_path;
+                if(avatarEl && avatarEl.tagName === 'IMG') avatarEl.src = json.profile_image_path;
               }
               if(json.background_image_path && currentField === 'background_image'){
                 const headerImg = document.querySelector('div[data-bg] img');
-                if(headerImg) headerImg.src = '/' + json.background_image_path;
+                if(headerImg) headerImg.src = json.background_image_path;
               }
             }catch(e){ console.error(e); }
             // close
