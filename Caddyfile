@@ -1,0 +1,9 @@
+{
+    # allow larger request bodies for file uploads
+    http_request_max_body_size 50MB
+}
+
+127.0.0.1:443 {
+  tls /home/yehudaj/jentexchange/app/cert.pem /home/yehudaj/jentexchange/app/key.pem
+  reverse_proxy 127.0.0.1:8000
+}

@@ -1,0 +1,34 @@
+Application: JentExchange (Laravel)
+
+Purpose: Small marketplace for Jewish entertainers. Users can sign up via Google OAuth
+and create entertainer profiles which include profile and background images, pricing,
+types, audiences, and video links.
+
+Key paths and components:
+- App root: /home/yehudaj/jentexchange/app
+- Public files served from: /home/yehudaj/jentexchange/app/public
+- Storage (public disk): storage/app/public (symlinked at public/storage)
+- Entertainer model: App\Models\Entertainer
+- Upload handling: App\Http\Controllers\EntertainerController
+  - store() handles initial signup upload
+  - update() handles profile edits and file uploads
+  - Uses Laravel `store('entertainer/profile','public')` and `store('entertainer/backgrounds','public')`
+
+Current environment and debugging notes (as of 2025-12-14):
+- Apache running and listening on 0.0.0.0:80, 0.0.0.0:443 inside WSL
+- Windows `wslrelay` forwards localhost requests via IPv6 ::1; IPv4->IPv6 portproxy added
+- PHP upload_max_filesize and post_max_size set to 50M
+- Storage symlink `public/storage` -> `storage/app/public` exists
+- PHP sqlite driver installed (php8.2-sqlite3)
+
+Upload troubleshooting checklist:
+1. Ensure `public/storage/entertainer-uploads` exists and is writable by web user (www-data).
+2. Ensure PHP `upload_max_filesize` and `post_max_size` are large enough for images.
+3. Check Laravel logs (storage/logs/laravel.log) for validation or storage errors.
+4. Use debug upload route `/debug/controller-upload/{entertainer}` to test without auth/CSRF.
+
+How to resume:
+- Start Apache in WSL and ensure `wslrelay`/portproxy forwarding is active on Windows.
+- Run a debug upload and inspect `storage/app/public/entertainer-uploads` for new files.
+
+Contact: leave output and logs in storage/logs/laravel.log and I will continue debugging.
