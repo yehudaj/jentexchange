@@ -20,9 +20,9 @@
         <div style="grid-column:1 / span 2;position:relative;margin-bottom:18px;padding-bottom:48px">
           <div style="height:220px;border-radius:10px;overflow:hidden;position:relative;background:#f3f4f6;">
             @php $bg = $entertainer->background_image_path ?? null; @endphp
-            <div style="width:100%;height:100%;background-size:cover;background-position:center;" @if($bg) data-bg="/{{ $bg }}" @endif>
-              @if($bg)
-                  <img src="{{ Storage::url($bg) }}" alt="Background" style="width:100%;height:100%;object-fit:cover;display:block" />
+            <div style="width:100%;height:100%;background-size:cover;background-position:center;" @if($entertainer->background_image_url) data-bg="{{ $entertainer->background_image_url }}" @endif>
+              @if($entertainer->background_image_url)
+                  <img src="{{ $entertainer->background_image_url }}" alt="Background" style="width:100%;height:100%;object-fit:cover;display:block" />
               @else
                 <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8">No background image</div>
               @endif
@@ -33,8 +33,8 @@
           <div style="position:absolute;left:20px;bottom:0;display:flex;align-items:center;gap:12px">
             <div style="width:96px;height:96px;border-radius:9999px;overflow:hidden;border:4px solid #fff;background:#fff">
               @php $pf = $entertainer->profile_image_path ?? null; @endphp
-              @if($pf)
-                  <img id="avatar-img" src="{{ Storage::url($pf) }}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;display:block" />
+              @if($entertainer->profile_image_url)
+                  <img id="avatar-img" src="{{ $entertainer->profile_image_url }}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;display:block" />
               @else
                 <div id="avatar-img" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#94a3b8">A</div>
               @endif
@@ -394,13 +394,24 @@
               if(!res.ok) throw new Error('Upload failed');
               const json = await res.json();
               // update DOM with returned paths
+              function normalizeReturnedUrl(val){
+                if(!val) return null;
+                try{ const u = new URL(val); return val; }catch(e){
+                  // not an absolute URL, assume it's a storage-relative path
+                  if(val.startsWith('/storage/')) return val;
+                  return '/storage/' + val.replace(/^\//, '');
+                }
+              }
+
               if(json.profile_image_path && currentField === 'profile_image'){
                 const avatarEl = document.getElementById('avatar-img');
-                if(avatarEl && avatarEl.tagName === 'IMG') avatarEl.src = json.profile_image_path;
+                const url = normalizeReturnedUrl(json.profile_image_path);
+                if(avatarEl && avatarEl.tagName === 'IMG' && url) avatarEl.src = url;
               }
               if(json.background_image_path && currentField === 'background_image'){
                 const headerImg = document.querySelector('div[data-bg] img');
-                if(headerImg) headerImg.src = json.background_image_path;
+                const url = normalizeReturnedUrl(json.background_image_path);
+                if(headerImg && url) headerImg.src = url;
               }
             }catch(e){ console.error(e); }
             // close

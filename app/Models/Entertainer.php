@@ -28,4 +28,16 @@ class Entertainer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getProfileImageUrlAttribute()
+    {
+        if (empty($this->profile_image_path)) return null;
+        return \Illuminate\Support\Facades\Storage::url($this->profile_image_path);
+    }
+
+    public function getBackgroundImageUrlAttribute()
+    {
+        if (empty($this->background_image_path)) return null;
+        return \Illuminate\Support\Facades\Storage::url($this->background_image_path);
+    }
 }
